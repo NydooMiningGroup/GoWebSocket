@@ -1,8 +1,6 @@
 package gosocket
 
 import (
-	"GoNydoo/pkg/config"
-	"GoNydoo/pkg/logging"
 	"fmt"
 	"github.com/gorilla/websocket"
 	"log"
@@ -19,11 +17,10 @@ type SocketConn struct {
 var SocketConnections = make(map[int]*SocketConn, 3)
 var running = false
 
-func CreateSocketConn(socketConf *config.WebSocket, appId *int, funcs map[string]interface{}) bool {
-	u := url.URL{Scheme: "wss", Host: fmt.Sprintf("%s:%d", socketConf.Host, socketConf.Port), Path: "/"}
+func CreateSocketConn(host string, port int16, appId *int, funcs map[string]interface{}) bool {
+	u := url.URL{Scheme: "wss", Host: fmt.Sprintf("%s:%d", host, port), Path: "/"}
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		logging.Log(1, "Could not create socket", *appId)
 		return false
 	}
 
@@ -68,21 +65,18 @@ func (s *SocketConn) runSocket(appId int, funcs map[string]interface{}) {
 			}
 			err := s.SocketConnection.WriteMessage(websocket.TextMessage, []byte(v))
 			if err != nil {
-				logging.Log(1, "Could not send message to socket", appId)
 			}
 		case message := <-msgChan:
 			fn, ok := funcs[message].(func(string) (bool, error))
 			if ok {
 				_, err := fn(message)
 				if err != nil {
-					logging.Log(1, err, appId)
 				}
 			}
 		default:
 			if time.Now().Unix()-t >= 60 {
 				err := s.SocketConnection.WriteMessage(websocket.TextMessage, []byte("KEAL"))
 				if err != nil {
-					logging.Log(1, "Could not send KEAL to socket", appId)
 				}
 				t = time.Now().UnixNano()
 			}
