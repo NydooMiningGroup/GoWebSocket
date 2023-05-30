@@ -1,4 +1,4 @@
-package GoSocket
+package gosocket
 
 import (
 	"GoNydoo/pkg/config"
