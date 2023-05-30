@@ -17,7 +17,7 @@ type SocketConn struct {
 var SocketConnections = make(map[int]*SocketConn, 3)
 var running = false
 
-func CreateSocketConn(host string, port string, appId int, funcs map[string]interface{}) bool {
+func CreateSocketConn(host string, port int, appId int, funcs map[string]interface{}) bool {
 	u := url.URL{Scheme: "wss", Host: fmt.Sprintf("%s:%d", host, port), Path: "/"}
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
