@@ -21,7 +21,7 @@ func CreateSocketConn(host string, port string, appId *int, funcs map[string]int
 	u := url.URL{Scheme: "wss", Host: fmt.Sprintf("%s:%d", host, port), Path: "/"}
 	c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 	if err != nil {
-		return falseÍ
+		return false
 	}
 
 	SocketConnections[*appId] = &SocketConn{
