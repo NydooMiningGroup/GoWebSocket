@@ -8,7 +8,6 @@ import (
 	"time"
 )
 
-// tttt
 type SocketConn struct {
 	SocketChannel    chan string
 	SocketConnection *websocket.Conn
@@ -41,7 +40,6 @@ func (s *SocketConn) waitForMessage(c chan string) {
 			log.Println("Could not read message from socket", err)
 			return
 		}
-		println(message)
 		c <- string(message)
 	}
 }
